@@ -19,7 +19,6 @@ public class Main extends Application {
 
     Label label;
     TextField textField;
-    TextInputDialog textInputDialog;
     Optional<String> result;
 
     @Override
@@ -47,18 +46,21 @@ public class Main extends Application {
 
     private void showInputTextDialog() {
 
-        textInputDialog = new TextInputDialog();
-        textInputDialog.setTitle("Name enter dialog");
+        TextInputDialog textInputDialog = new TextInputDialog();
+        textInputDialog.setTitle("Enter Name");
         textInputDialog.setHeaderText("Enter your name:");
         textInputDialog.setContentText("Name:");
 
         Optional<String> result = textInputDialog.showAndWait();
 
-        result.ifPresent(name -> {
-            label.setText(name);
-        });
+        result.ifPresent(name -> processFullName(name));
     }
-    
+
+    private void processFullName(String fullName) {
+        String[] fullNameParts = fullName.split(" ");
+
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
