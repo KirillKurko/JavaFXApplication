@@ -16,12 +16,12 @@ import java.util.*;
 
 public class Main extends Application {
 
-    private ListView<String> namesListView;
-    private ListView<String> surnamesListView;
-    private ListView<String> fatherlandsListView;
-    private ListView<String> sortedSelectedSurnamesListView;
+    ListView<String> namesListView;
+    ListView<String> surnamesListView;
+    ListView<String> fatherlandsListView;
+    ListView<String> sortedSelectedSurnamesListView;
 
-    ObservableList<String> names;
+    ObservableList<String> names = FXCollections.observableArrayList();
     ObservableList<String> surnames;
     ObservableList<String> fatherlands;
     ObservableList<String> sortedSelectedSurnames;
@@ -40,19 +40,10 @@ public class Main extends Application {
         primaryStage.setTitle("Names");
         primaryStage.setScene(new Scene(rootNode, 500, 400));
 
-//        nameLabel = new Label("Name");
-//        nameLabel.setMaxSize(100, 50);
-//        
         nameLabel = Helper.createLabel("Name", 100, 50);
-
-        surnameLabel = new Label("Surname");
-        surnameLabel.setMaxSize(100, 50);
-
-        fatherlandLabel = new Label("Fatherland");
-        fatherlandLabel.setMaxSize(100, 50);
-
-        sortedSurnamesLabel = new Label("Processed");
-        sortedSurnamesLabel.setMaxSize(100, 50);
+        surnameLabel = Helper.createLabel("Surname", 100, 50);
+        fatherlandLabel = Helper.createLabel("Fatherland", 100, 50);
+        sortedSurnamesLabel = Helper.createLabel("Processed", 100, 50);
 
 
         Button fullNameEnterButton = new Button("Enter name");
@@ -60,21 +51,16 @@ public class Main extends Application {
         fullNameEnterButton.setMaxSize(100, 25);
 
         names = FXCollections.observableArrayList();
-        namesListView = new ListView<>(names);
-        namesListView.setPrefSize(100, 300);
+        namesListView = Helper.createListView(names, 100, 300);
 
         surnames = FXCollections.observableArrayList();
-        surnamesListView = new ListView<>(surnames);
-        surnamesListView.setPrefSize(100, 300);
-        surnamesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        surnamesListView = Helper.createListView(surnames, 100, 300);
 
         fatherlands = FXCollections.observableArrayList();
-        fatherlandsListView = new ListView<>(fatherlands);
-        fatherlandsListView.setPrefSize(100, 300);
+        fatherlandsListView = Helper.createListView(surnames, 100, 300);
 
         sortedSelectedSurnames = FXCollections.observableArrayList();
-        sortedSelectedSurnamesListView = new ListView<>(sortedSelectedSurnames);
-        sortedSelectedSurnamesListView.setPrefSize(100, 300);
+        sortedSelectedSurnamesListView = Helper.createListView(sortedSelectedSurnames, 100, 300);
 
         Button processSelectedSurnamesButton = new Button("Process");
         processSelectedSurnamesButton.setMaxSize(100, 25);
@@ -97,17 +83,9 @@ public class Main extends Application {
     }
 
     private void showInputTextDialog() {
-        TextInputDialog textInputDialog = createTextInputDialog("Name", "Enter name", "Name: ");
+        TextInputDialog textInputDialog = Helper.createTextInputDialog("Name", "Enter name", "Name: ");
         Optional<String> result = textInputDialog.showAndWait();
         result.ifPresent(this::processFullName);
-    }
-
-    private TextInputDialog createTextInputDialog(String title, String headerText, String contentText) {
-        TextInputDialog textInputDialog = new TextInputDialog();
-        textInputDialog.setTitle(title);
-        textInputDialog.setHeaderText(headerText);
-        textInputDialog.setContentText(contentText);
-        return textInputDialog;
     }
 
     private void processFullName(String fullName) {
