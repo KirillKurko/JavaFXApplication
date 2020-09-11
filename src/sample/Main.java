@@ -6,8 +6,8 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -16,20 +16,9 @@ import java.util.*;
 
 public class Main extends Application {
 
-    ListView<String> namesListView;
-    ListView<String> surnamesListView;
-    ListView<String> fatherlandsListView;
-    ListView<String> sortedSelectedSurnamesListView;
-
-    ObservableList<String> names = FXCollections.observableArrayList();
-    ObservableList<String> surnames;
-    ObservableList<String> fatherlands;
-    ObservableList<String> sortedSelectedSurnames;
-
-    Label nameLabel;
-    Label surnameLabel;
-    Label fatherlandLabel;
-    Label sortedSurnamesLabel;
+    Map<Type, Label> labels;
+    Map<Type, ObservableList<String>> observableLists;
+    Map<Type, ListView<String>> listViews;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -40,27 +29,14 @@ public class Main extends Application {
         primaryStage.setTitle("Names");
         primaryStage.setScene(new Scene(rootNode, 500, 400));
 
-        nameLabel = Helper.createLabel("Name", 100, 50);
-        surnameLabel = Helper.createLabel("Surname", 100, 50);
-        fatherlandLabel = Helper.createLabel("Fatherland", 100, 50);
-        sortedSurnamesLabel = Helper.createLabel("Processed", 100, 50);
-
+        labels = createLabels();
+        observableLists = createObservableLists();
+        listViews = createListViews();
+        listViews.get(Type.SURNAME).getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         Button fullNameEnterButton = new Button("Enter name");
         fullNameEnterButton.setOnAction(event -> showInputTextDialog());
         fullNameEnterButton.setMaxSize(100, 25);
-
-        names = FXCollections.observableArrayList();
-        namesListView = Helper.createListView(names, 100, 300);
-
-        surnames = FXCollections.observableArrayList();
-        surnamesListView = Helper.createListView(surnames, 100, 300);
-
-        fatherlands = FXCollections.observableArrayList();
-        fatherlandsListView = Helper.createListView(surnames, 100, 300);
-
-        sortedSelectedSurnames = FXCollections.observableArrayList();
-        sortedSelectedSurnamesListView = Helper.createListView(sortedSelectedSurnames, 100, 300);
 
         Button processSelectedSurnamesButton = new Button("Process");
         processSelectedSurnamesButton.setMaxSize(100, 25);
@@ -69,17 +45,46 @@ public class Main extends Application {
         rootNode.add(fullNameEnterButton, 0, 0);
         rootNode.add(processSelectedSurnamesButton, 3, 0);
 
-        rootNode.add(surnameLabel, 0, 1);
-        rootNode.add(nameLabel, 1, 1);
-        rootNode.add(fatherlandLabel, 2, 1);
-        rootNode.add(sortedSurnamesLabel, 3, 1);
-
-        rootNode.add(surnamesListView, 0, 2);
-        rootNode.add(namesListView, 1, 2);
-        rootNode.add(fatherlandsListView, 2, 2);
-        rootNode.add(sortedSelectedSurnamesListView, 3, 2);
+        addLabelsToRootNode(rootNode, 1);
+        addListViewsToRootNode(rootNode, 2);
 
         primaryStage.show();
+    }
+
+    public void addLabelsToRootNode(GridPane rootNode, int rowIndex) {
+        for (Type type: Type.values()) {
+            rootNode.add(labels.get(type), type.ordinal(), rowIndex);
+        }
+    }
+
+    public void addListViewsToRootNode(GridPane rootNode, int rowIndex) {
+        for (Type type: Type.values()) {
+            rootNode.add(listViews.get(type), type.ordinal(), rowIndex);
+        }
+    }
+
+    public Map<Type, Label> createLabels() {
+        Map<Type, Label> labels = new HashMap<>();
+        for (Type type: Type.values()) {
+            labels.put(type, Helper.createLabel(type.toString(), 100, 50));
+        }
+        return labels;
+    }
+
+    public Map<Type, ObservableList<String>> createObservableLists() {
+        Map<Type, ObservableList<String>> observableLists = new HashMap<>();
+        for (Type type: Type.values()) {
+            observableLists.put(type, FXCollections.observableArrayList());
+        }
+        return observableLists;
+    }
+
+    public Map<Type, ListView<String>> createListViews() {
+        Map<Type, ListView<String>> listViews = new HashMap<>();
+        for (Type type: Type.values()) {
+            listViews.put(type, Helper.createListView(observableLists.get(type), 100, 300));
+        }
+        return listViews;
     }
 
     private void showInputTextDialog() {
@@ -90,16 +95,16 @@ public class Main extends Application {
 
     private void processFullName(String fullName) {
         String[] fullNameParts = fullName.split(" ");
-        names.add(fullNameParts[1]);
-        surnames.add(fullNameParts[0]);
-        fatherlands.add(fullNameParts[2]);
+        observableLists.get(Type.NAME).add(fullNameParts[1]);
+        observableLists.get(Type.SURNAME).add(fullNameParts[0]);
+        observableLists.get(Type.FATHERLAND).add(fullNameParts[2]);
     }
 
     private void processSelectedSurnames() {
-        ArrayList<String> selectedSurnames = new ArrayList<>(surnamesListView.getSelectionModel().getSelectedItems());
+        ArrayList<String> selectedSurnames = new ArrayList<>(listViews.get(Type.SURNAME).getSelectionModel().getSelectedItems());
         selectedSurnames.sort(Comparator.naturalOrder());
-        sortedSelectedSurnames.clear();
-        sortedSelectedSurnames.addAll(selectedSurnames);
+        observableLists.get(Type.SORTED_SURNAME).clear();
+        observableLists.get(Type.SORTED_SURNAME).addAll(selectedSurnames);
     }
 
     public static void main(String[] args) {
