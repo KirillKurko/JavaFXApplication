@@ -9,19 +9,21 @@ import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
-import java.util.Optional;
+import java.util.*;
 
 
 public class Main extends Application {
 
-    Label label;
     ListView<String> namesListView;
     ListView<String> surnamesListView;
     ListView<String> fatherlandsListView;
+    ListView<String> sortedSelectedSurnamesListView;
 
     ObservableList<String> names;
     ObservableList<String> surnames;
     ObservableList<String> fatherlands;
+    ObservableList<String> sortedSelectedSurnames;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -30,9 +32,7 @@ public class Main extends Application {
         rootNode.setAlignment(Pos.CENTER);
 
         primaryStage.setTitle("Some application");
-        primaryStage.setScene(new Scene(rootNode, 600, 500));
-
-        label = new Label("Text");
+        primaryStage.setScene(new Scene(rootNode, 800, 500));
 
         Button fullNameEnterButton = new Button("Press here and enter your full name");
         fullNameEnterButton.setOnAction(event -> showInputTextDialog());
@@ -44,13 +44,21 @@ public class Main extends Application {
         surnames = FXCollections.observableArrayList();
         surnamesListView = new ListView<>(surnames);
         surnamesListView.setPrefSize(100, 300);
+        surnamesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         fatherlands = FXCollections.observableArrayList();
         fatherlandsListView = new ListView<>(fatherlands);
         fatherlandsListView.setPrefSize(100, 300);
 
-        rootNode.getChildren().addAll(fullNameEnterButton, namesListView, surnamesListView,
-                fatherlandsListView, label);
+        sortedSelectedSurnames = FXCollections.observableArrayList();
+        sortedSelectedSurnamesListView = new ListView<>(sortedSelectedSurnames);
+        sortedSelectedSurnamesListView.setPrefSize(100, 300);
+
+        Button processSelectedSurnamesButton = new Button("Process");
+        processSelectedSurnamesButton.setOnAction(event -> processSelectedSurnames());
+
+        rootNode.getChildren().addAll(fullNameEnterButton, surnamesListView, namesListView,
+                fatherlandsListView, sortedSelectedSurnamesListView, processSelectedSurnamesButton);
 
         primaryStage.show();
     }
@@ -75,7 +83,14 @@ public class Main extends Application {
         surnames.add(fullNameParts[0]);
         fatherlands.add(fullNameParts[2]);
     }
-    
+
+    private void processSelectedSurnames() {
+        ArrayList<String> selectedSurnames = new ArrayList<>(surnamesListView.getSelectionModel().getSelectedItems());
+        selectedSurnames.sort(Comparator.naturalOrder());
+        sortedSelectedSurnames.clear();
+        sortedSelectedSurnames.addAll(selectedSurnames);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
