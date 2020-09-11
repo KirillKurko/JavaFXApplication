@@ -7,12 +7,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
+import jdk.nashorn.internal.runtime.options.Option;
+
+import java.util.Optional;
 
 
 public class Main extends Application {
@@ -20,6 +20,7 @@ public class Main extends Application {
     Label label;
     TextField textField;
     TextInputDialog textInputDialog;
+    Optional<String> result;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -30,18 +31,34 @@ public class Main extends Application {
         primaryStage.setTitle("Some application");
         primaryStage.setScene(new Scene(rootNode, 500, 300));
 
-        textInputDialog = new TextInputDialog("Enter your full name");
+        label = new Label("Text");
+
         Button fullNameEnterButton = new Button("Press here and enter your full name");
         fullNameEnterButton.setOnAction(event -> {
-            textInputDialog.show();
+            //result = textInputDialog.showAndWait();
+            showInputTextDialog();
         });
 
-        rootNode.getChildren().addAll(fullNameEnterButton);
+        rootNode.getChildren().addAll(fullNameEnterButton, label);
 
         primaryStage.show();
     }
 
 
+    private void showInputTextDialog() {
+
+        textInputDialog = new TextInputDialog();
+        textInputDialog.setTitle("Name enter dialog");
+        textInputDialog.setHeaderText("Enter your name:");
+        textInputDialog.setContentText("Name:");
+
+        Optional<String> result = textInputDialog.showAndWait();
+
+        result.ifPresent(name -> {
+            label.setText(name);
+        });
+    }
+    
     public static void main(String[] args) {
         launch(args);
     }
