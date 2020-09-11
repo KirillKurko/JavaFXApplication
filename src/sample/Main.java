@@ -15,9 +15,13 @@ import java.util.Optional;
 public class Main extends Application {
 
     Label label;
-    ListView<String> names;
-    ListView<String> surnames;
-    ListView<String> fatherland;
+    ListView<String> namesListView;
+    ListView<String> surnamesListView;
+    ListView<String> fatherlandsListView;
+
+    ObservableList<String> names;
+    ObservableList<String> surnames;
+    ObservableList<String> fatherlands;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -26,14 +30,27 @@ public class Main extends Application {
         rootNode.setAlignment(Pos.CENTER);
 
         primaryStage.setTitle("Some application");
-        primaryStage.setScene(new Scene(rootNode, 500, 300));
+        primaryStage.setScene(new Scene(rootNode, 600, 500));
 
         label = new Label("Text");
 
         Button fullNameEnterButton = new Button("Press here and enter your full name");
         fullNameEnterButton.setOnAction(event -> showInputTextDialog());
 
-        rootNode.getChildren().addAll(fullNameEnterButton, label);
+        names = FXCollections.observableArrayList();
+        namesListView = new ListView<>(names);
+        namesListView.setPrefSize(100, 300);
+
+        surnames = FXCollections.observableArrayList();
+        surnamesListView = new ListView<>(surnames);
+        surnamesListView.setPrefSize(100, 300);
+
+        fatherlands = FXCollections.observableArrayList();
+        fatherlandsListView = new ListView<>(fatherlands);
+        fatherlandsListView.setPrefSize(100, 300);
+
+        rootNode.getChildren().addAll(fullNameEnterButton, namesListView, surnamesListView,
+                fatherlandsListView, label);
 
         primaryStage.show();
     }
@@ -54,17 +71,11 @@ public class Main extends Application {
 
     private void processFullName(String fullName) {
         String[] fullNameParts = fullName.split(" ");
-
-
+        names.add(fullNameParts[1]);
+        surnames.add(fullNameParts[0]);
+        fatherlands.add(fullNameParts[2]);
     }
-
-    private ListView<String> createList() {
-        ObservableList<String> someList = FXCollections.observableArrayList();
-        ListView<String> listView = new ListView<>(someList);
-        listView.setPrefSize(100, 300);
-        return listView;
-    }
-
+    
     public static void main(String[] args) {
         launch(args);
     }
