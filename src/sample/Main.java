@@ -6,7 +6,9 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -14,28 +16,48 @@ import java.util.*;
 
 public class Main extends Application {
 
-    ListView<String> namesListView;
-    ListView<String> surnamesListView;
-    ListView<String> fatherlandsListView;
-    ListView<String> sortedSelectedSurnamesListView;
+    private ListView<String> namesListView;
+    private ListView<String> surnamesListView;
+    private ListView<String> fatherlandsListView;
+    private ListView<String> sortedSelectedSurnamesListView;
 
     ObservableList<String> names;
     ObservableList<String> surnames;
     ObservableList<String> fatherlands;
     ObservableList<String> sortedSelectedSurnames;
 
+    Label nameLabel;
+    Label surnameLabel;
+    Label fatherlandLabel;
+    Label sortedSurnamesLabel;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        FlowPane rootNode = new FlowPane(10, 10);
+        GridPane rootNode = new GridPane();
         rootNode.setAlignment(Pos.CENTER);
 
-        primaryStage.setTitle("Some application");
-        primaryStage.setScene(new Scene(rootNode, 800, 500));
+        primaryStage.setTitle("Names");
+        primaryStage.setScene(new Scene(rootNode, 500, 400));
 
-        Button fullNameEnterButton = new Button("Press here and enter your full name");
+        nameLabel = new Label("Name");
+        nameLabel.setMaxSize(100, 50);
+
+        surnameLabel = new Label("Surname");
+        surnameLabel.setMaxSize(100, 50);
+
+        fatherlandLabel = new Label("Fatherland");
+        fatherlandLabel.setMaxSize(100, 50);
+
+        sortedSurnamesLabel = new Label("Processed");
+        sortedSurnamesLabel.setMaxSize(100, 50);
+
+
+        Button fullNameEnterButton = new Button("Enter name");
         fullNameEnterButton.setOnAction(event -> showInputTextDialog());
+        fullNameEnterButton.setLayoutX(0);
+        fullNameEnterButton.setLayoutY(0);
+        fullNameEnterButton.setMaxSize(100, 25);
 
         names = FXCollections.observableArrayList();
         namesListView = new ListView<>(names);
@@ -55,27 +77,33 @@ public class Main extends Application {
         sortedSelectedSurnamesListView.setPrefSize(100, 300);
 
         Button processSelectedSurnamesButton = new Button("Process");
+        processSelectedSurnamesButton.setMaxSize(100, 25);
         processSelectedSurnamesButton.setOnAction(event -> processSelectedSurnames());
 
-        rootNode.getChildren().addAll(fullNameEnterButton, surnamesListView, namesListView,
-                fatherlandsListView, sortedSelectedSurnamesListView, processSelectedSurnamesButton);
+        rootNode.add(fullNameEnterButton, 0, 0);
+        rootNode.add(processSelectedSurnamesButton, 3, 0);
+
+        rootNode.add(surnameLabel, 0, 1);
+        rootNode.add(nameLabel, 1, 1);
+        rootNode.add(fatherlandLabel, 2, 1);
+        rootNode.add(sortedSurnamesLabel, 3, 1);
+
+        rootNode.add(surnamesListView, 0, 2);
+        rootNode.add(namesListView, 1, 2);
+        rootNode.add(fatherlandsListView, 2, 2);
+        rootNode.add(sortedSelectedSurnamesListView, 3, 2);
 
         primaryStage.show();
     }
 
-
     private void showInputTextDialog() {
-
         TextInputDialog textInputDialog = new TextInputDialog();
         textInputDialog.setTitle("Enter Name");
         textInputDialog.setHeaderText("Enter your name:");
         textInputDialog.setContentText("Name:");
-
         Optional<String> result = textInputDialog.showAndWait();
-
-        result.ifPresent(name -> processFullName(name));
+        result.ifPresent(this::processFullName);
     }
-
 
     private void processFullName(String fullName) {
         String[] fullNameParts = fullName.split(" ");
