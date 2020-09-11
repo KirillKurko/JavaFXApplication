@@ -1,16 +1,13 @@
 package sample;
 
-import com.sun.codemodel.internal.fmt.JTextFile;
-import com.sun.tools.javac.comp.Flow;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.runtime.options.Option;
 
 import java.util.Optional;
 
@@ -18,8 +15,9 @@ import java.util.Optional;
 public class Main extends Application {
 
     Label label;
-    TextField textField;
-    Optional<String> result;
+    ListView<String> names;
+    ListView<String> surnames;
+    ListView<String> fatherland;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -33,10 +31,7 @@ public class Main extends Application {
         label = new Label("Text");
 
         Button fullNameEnterButton = new Button("Press here and enter your full name");
-        fullNameEnterButton.setOnAction(event -> {
-            //result = textInputDialog.showAndWait();
-            showInputTextDialog();
-        });
+        fullNameEnterButton.setOnAction(event -> showInputTextDialog());
 
         rootNode.getChildren().addAll(fullNameEnterButton, label);
 
@@ -56,9 +51,18 @@ public class Main extends Application {
         result.ifPresent(name -> processFullName(name));
     }
 
+
     private void processFullName(String fullName) {
         String[] fullNameParts = fullName.split(" ");
 
+
+    }
+
+    private ListView<String> createList() {
+        ObservableList<String> someList = FXCollections.observableArrayList();
+        ListView<String> listView = new ListView<>(someList);
+        listView.setPrefSize(100, 300);
+        return listView;
     }
 
     public static void main(String[] args) {
