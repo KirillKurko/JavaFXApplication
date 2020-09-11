@@ -40,8 +40,10 @@ public class Main extends Application {
         primaryStage.setTitle("Names");
         primaryStage.setScene(new Scene(rootNode, 500, 400));
 
-        nameLabel = new Label("Name");
-        nameLabel.setMaxSize(100, 50);
+//        nameLabel = new Label("Name");
+//        nameLabel.setMaxSize(100, 50);
+//        
+        nameLabel = Helper.createLabel("Name", 100, 50);
 
         surnameLabel = new Label("Surname");
         surnameLabel.setMaxSize(100, 50);
@@ -55,8 +57,6 @@ public class Main extends Application {
 
         Button fullNameEnterButton = new Button("Enter name");
         fullNameEnterButton.setOnAction(event -> showInputTextDialog());
-        fullNameEnterButton.setLayoutX(0);
-        fullNameEnterButton.setLayoutY(0);
         fullNameEnterButton.setMaxSize(100, 25);
 
         names = FXCollections.observableArrayList();
@@ -97,12 +97,17 @@ public class Main extends Application {
     }
 
     private void showInputTextDialog() {
-        TextInputDialog textInputDialog = new TextInputDialog();
-        textInputDialog.setTitle("Enter Name");
-        textInputDialog.setHeaderText("Enter your name:");
-        textInputDialog.setContentText("Name:");
+        TextInputDialog textInputDialog = createTextInputDialog("Name", "Enter name", "Name: ");
         Optional<String> result = textInputDialog.showAndWait();
         result.ifPresent(this::processFullName);
+    }
+
+    private TextInputDialog createTextInputDialog(String title, String headerText, String contentText) {
+        TextInputDialog textInputDialog = new TextInputDialog();
+        textInputDialog.setTitle(title);
+        textInputDialog.setHeaderText(headerText);
+        textInputDialog.setContentText(contentText);
+        return textInputDialog;
     }
 
     private void processFullName(String fullName) {
