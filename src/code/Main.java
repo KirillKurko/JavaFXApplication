@@ -2,7 +2,9 @@ package code;
 
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -24,29 +26,29 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        creator = new Creator();
+        Parent rootNode = FXMLLoader.load(getClass().getResource("/resources/fxml/layout.fxml"));
+        Scene scene = new Scene(rootNode);
 
-        GridPane rootNode = new GridPane();
-        rootNode.setAlignment(Pos.CENTER);
-
+        primaryStage.setScene(scene);
         primaryStage.setTitle("Names");
-        primaryStage.setScene(new Scene(rootNode, 500, 400));
+        primaryStage.setWidth(500);
+        primaryStage.setHeight(400);
+//
+//        labels = creator.createLabels();
+//        observableLists = creator.createObservableLists();
+//        listViews = creator.createListViews(observableLists);
+//        listViews.get(Type.SURNAME).getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+//
+//        Button fullNameEnterButton = creator.createButton("Enter name", 100, 25);
+//        fullNameEnterButton.setOnAction(event -> showInputTextDialog());
+//
+//        Button processSelectedSurnamesButton = creator.createButton("Process", 100, 25);
+//        processSelectedSurnamesButton.setOnAction(event -> processSelectedSurnames());
 
-        labels = creator.createLabels();
-        observableLists = creator.createObservableLists();
-        listViews = creator.createListViews(observableLists);
-        listViews.get(Type.SURNAME).getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        Button fullNameEnterButton = creator.createButton("Enter name", 100, 25);
-        fullNameEnterButton.setOnAction(event -> showInputTextDialog());
-
-        Button processSelectedSurnamesButton = creator.createButton("Process", 100, 25);
-        processSelectedSurnamesButton.setOnAction(event -> processSelectedSurnames());
-
-        rootNode.add(fullNameEnterButton, 0, 0);
-        rootNode.add(processSelectedSurnamesButton, 3, 0);
-        addLabelsToRootNode(rootNode, 1);
-        addListViewsToRootNode(rootNode, 2);
+        //rootNode.add(fullNameEnterButton, 0, 0);
+        //rootNode.add(processSelectedSurnamesButton, 3, 0);
+        //addLabelsToRootNode(rootNode, 1);
+       // addListViewsToRootNode(rootNode, 2);
 
         primaryStage.show();
     }
