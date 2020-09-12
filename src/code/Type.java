@@ -1,4 +1,4 @@
-package sample;
+package code;
 
 public enum Type {
     NAME("Name"),
